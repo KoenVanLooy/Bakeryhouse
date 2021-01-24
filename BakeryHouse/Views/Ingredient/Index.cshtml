@@ -1,0 +1,53 @@
+﻿@model IEnumerable<BakeryHouse.Models.Ingredient>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Soort)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Allergeen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Voorraad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prijs)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Soort)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Allergeen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Voorraad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Prijs)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.IngredientId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.IngredientId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.IngredientId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

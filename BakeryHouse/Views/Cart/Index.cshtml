@@ -1,0 +1,51 @@
+﻿@model BakeryHouse.ViewModels.OrderViewModel
+<!-- <div class="container">-->
+<div class="col-4  float-left">
+    <form asp-controller="Order" asp-action="Index">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="order.LeverDatum" class="control-label"></label>
+            <input asp-for="order.LeverDatum" min="@(Model.Today)" value="@Model.Today" type="date" class="form-control" />
+            <span asp-validation-for="order.LeverDatum" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Order Bevestigen" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+<div class="col-2 float-left"></div>
+<div class="col-6  float-left">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Naam
+                </th>
+                <th>
+                    Aantal
+                </th>
+                <th>
+                    Prijs
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.cart)
+            {
+                <tr>
+                    <td>
+                        @item.product.Naam
+                    </td>
+                    <td>
+                        @item.Aantal
+                    </td>
+                    <td>
+                        € @(item.Aantal * @item.product.Prijs)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<!--  </div> -->

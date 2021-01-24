@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="border rounded text-center divblocknav"
+             style="background-image: url('images/appeltaart.jpg');">
+                <a asp-controller="UserProduct" asp-action="Index" class="rounded zoom text-center atagnav">
+                  Taart
+                </a>
+        </div>
+        <div class="divblocknav col border rounded text-center"
+             style="background-image: url('images/cupcake.jpg');">
+                <a asp-controller="UserProduct" asp-action="CupCake" class="rounded zoom text-center atagnav">Cupcake</a>
+        </div>
+        <div class="divblocknav col border rounded text-center"
+             style="background-image: url('images/chocolatecake.jpg');">
+                <a asp-controller="UserProduct" asp-action="Cake" class="rounded zoom text-center atagnav">Cake</a>
+        </div>
+        <div class="divblocknav col border rounded text-center"
+              style="background-image: url('images/brownies.jpg');">
+                <a asp-controller="UserProduct" asp-action="Brownie" class="rounded zoom text-center atagnav">Brownie</a>
+        </div>
+    </div>
+</div>
+

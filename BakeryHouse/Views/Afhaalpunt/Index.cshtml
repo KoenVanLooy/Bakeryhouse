@@ -1,0 +1,53 @@
+﻿@model BakeryHouse.ViewModels.IndexAfhaalpuntViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Omschrijving
+            </th>
+            <th>
+                Adres
+            </th>
+            <th>
+                Postcode
+            </th>
+            <th>
+               Stad
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Afhaalpunten) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Omschrijving)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adres)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Postcode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.stad)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AfhaalpuntId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AfhaalpuntId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AfhaalpuntId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

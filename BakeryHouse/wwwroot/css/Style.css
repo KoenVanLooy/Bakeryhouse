@@ -1,0 +1,132 @@
+﻿
+body {
+    
+}
+.border {
+}
+
+.imgnav{
+    height:150px;
+    width:150px;
+}
+.atagnav {
+    color:black;
+    font-family:'Times New Roman', Times, serif;
+    font-size:16px;
+}
+ .atagnav:hover {
+        text-decoration: none;
+        color: black;
+ }
+ 
+
+.bottomborder{
+    border-bottom: 2px solid pink;
+}
+
+.divblocknav {
+    width: 22%;
+    min-width:150px;
+    display: table;
+    margin: 10px;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+.divblocknavpink {
+    width: 22%;
+    min-width: 150px;
+    display: table;
+    margin: 10px;
+    min-height:100px;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+}
+.zoom {
+    padding: 10px;
+    display:table-cell;
+    background-color: white;
+    transition: transform .2s; /* Animation */
+    width: 50%;
+    margin: 0 auto;
+    position: absolute;
+    vertical-align:central;
+    top:40%;
+    left:25%;
+}
+.zoom:hover {
+    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    background-color: lightpink;
+}
+.zoompink {
+    padding: 10px;
+    display: table-cell;
+    background-color: lightpink;
+    transition: transform .2s; /* Animation */
+    width: 50%;
+    margin: 0 auto;
+    position: absolute;
+    vertical-align: central;
+    top: 40%;
+    left: 25%;
+}
+ .zoompink:hover {
+        background-color: pink;
+
+ }
+
+li a {
+    text-align: center;
+    padding: 5px;
+    margin: 0px;
+    color: black;
+    vertical-align: central;
+}
+
+li a:hover {
+    background-color: lightpink;
+    border-radius: 5px;
+    border: 2px solid pink;
+    color: white;
+    text-decoration:none;
+    padding: 5px;
+}
+
+#over img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.buttonadd {
+    background-color: darkgray;
+    text-align: center;
+    display: inline-block;
+    color: white;
+    border: none;
+    font-size: 16px;
+    padding:5px 10px;
+    border-radius: 2px;
+}
+    .buttonadd:hover {
+        text-decoration: none;
+        background-color: hsl(1, 0%, 77%);
+    }
+
+.productbordertop {
+    border-top: 2px dashed hsl(1, 0%, 77%);
+    margin: 10px;
+    padding:10px;
+}
+
+.producth2 {
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
+}
+.producth3 {
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif;
+}
+}

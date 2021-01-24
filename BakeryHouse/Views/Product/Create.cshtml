@@ -1,0 +1,51 @@
+﻿@model BakeryHouse.ViewModels.CreateProductViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Product.Naam" class="control-label"></label>
+                <input asp-for="Product.Naam" class="form-control" />
+                <span asp-validation-for="Product.Naam" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Prijs" class="control-label"></label>
+                <input type="text" asp-for="Product.Prijs" class="form-control" />
+                <span asp-validation-for="Product.Prijs" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Type" class="control-label"></label>
+                <input asp-for="Product.Type" class="form-control" />
+                <span asp-validation-for="Product.Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.Image" class="control-label"></label>
+                <input asp-for="Product.Image" class="form-control" />
+                <span asp-validation-for="Product.Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <select class="custom-select" multiple asp-for="GeselecteerdeIngredienten" asp-items="Model.Ingredientenlijst"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
