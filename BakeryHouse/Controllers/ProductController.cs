@@ -9,6 +9,7 @@ using BakeryHouse.Data;
 using BakeryHouse.Models;
 using BakeryHouse.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using BakeryHouse.Helper;
 
 namespace BakeryHouse.Controllers
 {
@@ -23,9 +24,47 @@ namespace BakeryHouse.Controllers
         }
 
         // GET: Product
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+             string sortOrder,
+             string currentFilter,
+             string searchString,
+             int? pageNumber)
         {
-            return View(await _context.Producten.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+
+            var producten = from p in _context.Producten
+                           select p;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                producten = producten.Where(p => p.Naam.Contains(searchString)
+                                       || p.Type.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    producten = producten.OrderBy(p => p.Type);
+                    break;
+                case "Date":
+                    producten = producten.OrderBy(p => p.Prijs);
+                    break;
+                default:
+                    producten = producten.OrderBy(p => p.Naam);
+                    break;
+            }
+            int pageSize = 4;
+            return View(await PaginatedList<Product>.CreateAsync(producten.AsNoTracking(), pageNumber ?? 1, pageSize));
+           
         }
 
         // GET: Product/Details/5

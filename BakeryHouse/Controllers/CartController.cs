@@ -9,6 +9,7 @@ using BakeryHouse.Models;
 using BakeryHouse.Data;
 using Microsoft.AspNetCore.Authorization;
 using BakeryHouse.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BakeryHouse.Controllers
 {
@@ -20,13 +21,14 @@ namespace BakeryHouse.Controllers
         {
             this.context = context;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string today = DateTime.Today.ToString("yyyy-MM-dd");
             OrderViewModel viewModel = new OrderViewModel
             {
                 order = new Order(),
-                Today = today
+                Today = today,
+                afhaalpunten = await context.Afhaalpunten.ToListAsync()
             };
             var cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
 
@@ -34,8 +36,8 @@ namespace BakeryHouse.Controllers
             {
                 cart = new List<Item>();
             }
-            ViewBag.cart = cart;
-            ViewBag.Total = cart.Sum(i => i.product.Prijs * i.Aantal);
+            viewModel.Items = cart;
+            viewModel.Total = cart.Sum(i => i.product.Prijs * i.Aantal);
             return View(viewModel);
         }
 
@@ -74,6 +76,14 @@ namespace BakeryHouse.Controllers
                 }
             }
             return -1;
+        }
+
+        public IActionResult Delitem(int id)
+        {
+            var cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+            cart.RemoveAt(id);
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+            return RedirectToAction("Index");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@model BakeryHouse.ViewModels.TaartViewModel;
 @{
-    ViewData["Title"] = "Userproduct";
+    ViewData["Title"] = "Userproduct-Taart";
 }
 
     <div class="container">
@@ -23,7 +23,7 @@
         <section class="row">
             <h1>Taarten</h1>
         </section>
-        @foreach (var product in Model.producten)
+        @foreach (var product in Model.Taarten)
         {
         <section class="row productbordertop">
             <img src="~/Images/@product.Image" alt="~/Images/Appeltaart.jpg" class="rounded float-left col-3" />
@@ -34,6 +34,7 @@
                 {
                     <img src="~/Images/Ingrediënten/@productregel.Ingredient.Soort.ToLower()" />
                 }
+                <h3 class="producth3 mt-2">Prijs: € @product.Prijs</h3>
             <form asp-controller="Cart" asp-action="buy" method="get">
                 <input id="id" name="id" type="hidden" value="@product.ProductId">
                 <label for="Aantal">Aantal</label>

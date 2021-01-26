@@ -28,13 +28,14 @@ namespace BakeryHouse.Controllers
         }
 
         //Get
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string today = DateTime.Today.ToString("yyyy-MM-dd");
             OrderViewModel viewModel = new OrderViewModel
             {
                 order = new Order(),
-                Today = today
+                Today = today,
+               
             };
            
             return View(viewModel);
@@ -44,12 +45,22 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(OrderViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            var cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+            List<Afhaalpunt> afhaalpunten = await _context.Afhaalpunten.ToListAsync();
+            if (ModelState.IsValid && cart != null)
             {
                 List<Orderlijn> orderlijnen = new List<Orderlijn>();
-                var cart = SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart");
+               
                 Order order = viewModel.order;
-                order.AfhaalpuntId = 1;
+                order.Orderdatum = DateTime.Today;
+                
+                foreach (Afhaalpunt afhaalpunt in afhaalpunten)
+                {
+                    if (("Afhaalpuntid"+afhaalpunt.AfhaalpuntId.ToString())== viewModel.RadioField) 
+                    {
+                        order.AfhaalpuntId = afhaalpunt.AfhaalpuntId;
+                    }
+                }
                 string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
 
@@ -76,6 +87,17 @@ namespace BakeryHouse.Controllers
                 await _context.SaveChangesAsync();
                 viewModel.leverdatum = orderprodregel.LeverDatum.ToString("dd-MM-yyyy");
                 viewModel.Afhaalpunt = orderprodregel.Afhaalpunt;
+
+                cart.Clear();
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+            }
+            else
+            {
+                viewModel.FaultMessage = "Er zijn Geen items in de winkelmand";
+                viewModel.afhaalpunten = afhaalpunten;
+                viewModel.Items = new List<Item>();
+                viewModel.Total = 0;
+                return View("~/Views/Cart/Index.cshtml", viewModel);
             }
             
            return View(viewModel);

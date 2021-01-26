@@ -19,23 +19,29 @@ namespace BakeryHouse.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             TaartViewModel viewModel = new TaartViewModel();
-            viewModel.producten = await _context.Producten.Include(p => p.Productregels).ThenInclude(x => x.Ingredient).ToListAsync();
+            viewModel.Taarten = await _context.Producten.Where(p=>p.Type=="Taart").Include(p => p.Productregels).ThenInclude(x => x.Ingredient).ToListAsync();
             viewModel.productregels = await _context.Productregels.ToListAsync();
             return View(viewModel);
         }
 
-      
-        public IActionResult CupCake()
+
+        public async Task<IActionResult> CupCake()
         {
-            return View();
+            TaartViewModel viewModel = new TaartViewModel();
+            viewModel.Cupcakes = await _context.Producten.Where(p => p.Type == "Cupcake").Include(p => p.Productregels).ThenInclude(x => x.Ingredient).ToListAsync();
+            return View(viewModel);
         }
-        public IActionResult Cake()
+        public async Task<IActionResult> Cake()
         {
-            return View();
+            TaartViewModel viewModel = new TaartViewModel();
+            viewModel.Cakes = await _context.Producten.Where(p => p.Type == "Cake").Include(p => p.Productregels).ThenInclude(x => x.Ingredient).ToListAsync();
+            return View(viewModel);
         }
-        public IActionResult Brownie()
+        public async Task<IActionResult> Brownie()
         {
-            return View();
+            TaartViewModel viewModel = new TaartViewModel();
+            viewModel.Brownies = await _context.Producten.Where(p => p.Type == "Brownie").Include(p => p.Productregels).ThenInclude(x => x.Ingredient).ToListAsync();
+            return View(viewModel);
         }
     }
 }

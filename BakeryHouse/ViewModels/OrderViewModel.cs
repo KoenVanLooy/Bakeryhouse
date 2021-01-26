@@ -12,7 +12,16 @@ namespace BakeryHouse.ViewModels
 
         public string Today { get; set; }
 
+        public string RadioField { get; set; }
+
+        public string FaultMessage { get; set; }
+        public List<Afhaalpunt> afhaalpunten { get; set; }
         public string leverdatum { get; set; }
         public Afhaalpunt Afhaalpunt { get; set; }
+
+        public List<Item> Items { get; set; }
+
+        public Decimal Total { get; set; }
+        public double Totaal { get; set; }
     }
 }

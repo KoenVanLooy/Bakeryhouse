@@ -129,4 +129,15 @@ li a:hover {
     font-size: 16px;
     font-family: 'Times New Roman', Times, serif;
 }
+.buttonplus {
+    background-color: white;
+    color: deepskyblue;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+.buttonplus:hover {
+    text-decoration: none;
+    color: white;
+    background-color: cornflowerblue;
 }

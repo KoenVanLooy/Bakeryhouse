@@ -9,7 +9,10 @@ namespace BakeryHouse.ViewModels
 {
     public class TaartViewModel
     {
-        public List<Product> producten { get; set; }
+        public List<Product> Taarten { get; set; }
+        public List<Product> Cakes { get; set; }
+        public List<Product> Cupcakes { get; set; }
+        public List<Product> Brownies { get; set; }
 
         public List<Productregel> productregels { get; set; }
     }
