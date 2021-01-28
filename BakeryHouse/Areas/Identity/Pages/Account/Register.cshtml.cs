@@ -97,14 +97,24 @@ namespace BakeryHouse.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new CustomUser { UserName = Input.Email, Email = Input.Email};
-                Klant klant = new Klant { Voornaam = Input.Voornaam, Naam = Input.Naam, Postcode = Input.Postcode, Telefoon=Input.Telefoon,
-                UserId=user.Id};
+                var user = new CustomUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    Klant = new Klant
+                    {
+                        Voornaam = Input.Voornaam,
+                        Naam = Input.Naam,
+                        Postcode = Input.Postcode,
+                        Telefoon = Input.Telefoon,
+                        Email = Input.Email
+                    }
+                };
                 var result = await _userManager.CreateAsync((CustomUser)user, Input.Password);
+                user.Klant.UserId = user.Id;
+                await _context.SaveChangesAsync();
                 if (result.Succeeded)
                 {
-                    _context.Add(klant);
-                    await _context.SaveChangesAsync();
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync((CustomUser)user);

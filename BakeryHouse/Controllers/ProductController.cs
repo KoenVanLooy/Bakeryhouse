@@ -10,6 +10,7 @@ using BakeryHouse.Models;
 using BakeryHouse.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using BakeryHouse.Helper;
+using System.Security.Claims;
 
 namespace BakeryHouse.Controllers
 {
@@ -20,6 +21,7 @@ namespace BakeryHouse.Controllers
 
         public ProductController(BakeryHouseContext context)
         {
+            
             _context = context;
         }
 
@@ -30,9 +32,13 @@ namespace BakeryHouse.Controllers
              string searchString,
              int? pageNumber)
         {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+            IndexProductModel viewModel = new IndexProductModel();
+            viewModel.CurrentSort = sortOrder;
+            viewModel.NaamSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            viewModel.PrijsSortParm = sortOrder == "Prijs" ? "prijs_desc" : "Prijs";
+            viewModel.TypeSortParm = sortOrder == "Type" ? "type_desc" : "Type";
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -41,7 +47,7 @@ namespace BakeryHouse.Controllers
             {
                 searchString = currentFilter;
             }
-            ViewData["CurrentFilter"] = searchString;
+            viewModel.CurrentFilter = searchString;
 
             var producten = from p in _context.Producten
                            select p;
@@ -53,23 +59,36 @@ namespace BakeryHouse.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
+                    producten = producten.OrderByDescending(p => p.Naam);
+                    break;
+                case "Prijs":
+                    producten = producten.OrderBy(p => p.Prijs);
+                    break;
+                case "prijs_desc":
+                    producten = producten.OrderByDescending(p => p.Prijs);
+                    break;
+                case "Type":
                     producten = producten.OrderBy(p => p.Type);
                     break;
-                case "Date":
-                    producten = producten.OrderBy(p => p.Prijs);
+                case "type_desc":
+                    producten = producten.OrderByDescending(p => p.Type);
                     break;
                 default:
                     producten = producten.OrderBy(p => p.Naam);
                     break;
             }
             int pageSize = 4;
-            return View(await PaginatedList<Product>.CreateAsync(producten.AsNoTracking(), pageNumber ?? 1, pageSize));
+            viewModel.paginaList = await PaginatedList<Product>.CreateAsync(producten.AsNoTracking(), pageNumber ?? 1, pageSize);
+            
+            return View(viewModel);
            
         }
 
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -88,6 +107,8 @@ namespace BakeryHouse.Controllers
         // GET: Product/Create
         public IActionResult Create()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             CreateProductViewModel viewModel = new CreateProductViewModel
             {
                 Product = new Product(),
@@ -105,7 +126,9 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateProductViewModel viewModel)
         {
-         
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+
             if (ModelState.IsValid)
             {
                 List<Productregel> nieuweRegels = new List<Productregel>();
@@ -136,17 +159,27 @@ namespace BakeryHouse.Controllers
         // GET: Product/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Producten.FindAsync(id);
+            var product = await _context.Producten.Include(p => p.Productregels).
+                SingleOrDefaultAsync(x => x.ProductId == id);
             if (product == null)
             {
                 return NotFound();
             }
-            return View(product);
+
+            EditProductViewModel viewModel = new EditProductViewModel
+            {
+                Product = product,
+                Ingredientenlijst = new SelectList(_context.Ingredienten, "IngredientId", "Soort"),
+                GeselecteerdeIngredienten = product.Productregels.Select(pr => pr.IngredientId)
+            };
+            return View(viewModel);
         }
 
         // POST: Product/Edit/5
@@ -154,39 +187,54 @@ namespace BakeryHouse.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Naam,Prijs,Type,Image")] Product product)
+        public async Task<IActionResult> Edit(int id, EditProductViewModel viewModel)
         {
-            if (id != product.ProductId)
+            Product product = await _context.Producten.Include(p => p.Productregels).SingleOrDefaultAsync(p => p.ProductId == id);
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+            if (id != viewModel.Product.ProductId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                
+                product.Naam = viewModel.Product.Naam;
+                product.Prijs = viewModel.Product.Prijs;
+                product.Image = viewModel.Product.Image;
+                product.Type = viewModel.Product.Type;
+
+                List<Productregel> productregels = new List<Productregel>();
+
+                foreach (int ingredientid in viewModel.GeselecteerdeIngredienten)
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId))
+                    productregels.Add(
+                    new Productregel
                     {
-                        return NotFound();
+                        IngredientId = ingredientid,
+                        ProductId = viewModel.Product.ProductId    
                     }
-                    else
-                    {
-                        throw;
-                    }
+                  );
                 }
+                product.Productregels.RemoveAll(pr => !productregels.Contains(pr));
+                product.Productregels.AddRange(productregels.Where(pr => !product.Productregels.Contains(pr)));
+               
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+          
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            viewModel.Ingredientenlijst = new SelectList(_context.Ingredienten, "IngredientId", "Soort");
+            viewModel.GeselecteerdeIngredienten = product.Productregels.Select(pr => pr.IngredientId);
+            return View(viewModel);
         }
 
         // GET: Product/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();

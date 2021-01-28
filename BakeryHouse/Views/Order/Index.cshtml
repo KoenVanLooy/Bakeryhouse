@@ -1,13 +1,17 @@
 ﻿@model BakeryHouse.ViewModels.OrderViewModel
-    <div class="container">
-        <p class="col-md-12 text-center" style="font-size: 17px;">  Bedankt voor de Bestelling, uw order kan afghelaald worden op: </p>
-        <div class="col-md-12 text-center">
-            @Model.leverdatum In @Model.Afhaalpunt.Omschrijving
-        </div>
-        <div class="col-md-12 text-center">
-            Adres: @Model.Afhaalpunt.Adres te @Model.Afhaalpunt.stad
-        </div>
-        <div class="col-md-12 text-center">
-            <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Verder Shoppen</a>
-        </div>
+@{
+    ViewData["Title"] = "Order-Index";
+}
+
+<div class="container">
+    <p class="col-md-12 text-center" style="font-size: 17px;">  Bedankt voor de Bestelling, uw order kan afghelaald worden op: </p>
+    <div class="col-md-12 text-center">
+        @Model.leverdatum In @Model.Afhaalpunt.Omschrijving
     </div>
+    <div class="col-md-12 text-center">
+        Adres: @Model.Afhaalpunt.Adres te @Model.Afhaalpunt.stad
+    </div>
+    <div class="col-md-12 text-center">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Verder Shoppen</a>
+    </div>
+</div>

@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using BakeryHouse.Areas.Identity.Data;
+using BakeryHouse.Models;
+using System.Security.Claims;
+using BakeryHouse.Data;
 
 namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
 {
@@ -19,15 +22,18 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly BakeryHouseContext _context;
 
         public EmailModel(
             UserManager<CustomUser> userManager,
             SignInManager<CustomUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            BakeryHouseContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -52,6 +58,8 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAsync(IdentityUser user)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             var email = await _userManager.GetEmailAsync((CustomUser)user);
             Email = email;
 

@@ -9,6 +9,7 @@ using BakeryHouse.Models;
 using System.Security.Claims;
 using BakeryHouse.Data;
 using BakeryHouse.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BakeryHouse.Controllers
 {
@@ -36,11 +37,21 @@ namespace BakeryHouse.Controllers
 
         public IActionResult Privacy()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             return View();
         }
-        public IActionResult Taart()
+        public async Task<IActionResult> Contact()
         {
-            return View();
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+            List<Afhaalpunt> afhaalpunten = await _context.Afhaalpunten.ToListAsync();
+            Afhaalpunt afhaalpunt = afhaalpunten.First();
+            ContactViewModel viewModel = new ContactViewModel
+            {
+                Afhaalpunt = afhaalpunt
+            };
+            return View(viewModel);
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

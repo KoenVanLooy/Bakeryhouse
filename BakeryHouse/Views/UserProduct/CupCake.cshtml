@@ -6,18 +6,18 @@
 
 <div class="container">
     <div class="row">
-        <div class="border rounded text-center divblocknavpink">
+        <div class="rounded text-center divblocknavpink">
             <a asp-controller="UserProduct" asp-action="Index" class="rounded zoompink text-center atagnav">
                 Taart
             </a>
         </div>
-        <div class="divblocknavpink col border rounded text-center">
+        <div class="divblocknavpink col rounded text-center">
             <a asp-controller="UserProduct" asp-action="CupCake" class="rounded zoompink text-center atagnav">Cupcake</a>
         </div>
-        <div class="divblocknavpink col border rounded text-center">
+        <div class="divblocknavpink col rounded text-center">
             <a asp-controller="UserProduct" asp-action="Cake" class="rounded zoompink text-center atagnav">Cake</a>
         </div>
-        <div class="divblocknavpink col border rounded text-center">
+        <div class="divblocknavpink col rounded text-center">
             <a asp-controller="UserProduct" asp-action="Brownie" class="rounded zoompink text-center atagnav">Brownie</a>
         </div>
     </div>
@@ -28,8 +28,8 @@
     @foreach (var product in Model.Cupcakes)
     {
         <section class="row productbordertop">
-            <img src="~/Images/@product.Image" alt="~/Images/Appeltaart.jpg" class="rounded float-left col-3" />
-            <div class="float-left col">
+            <img src="~/Images/@product.Image" alt="~/Images/Appeltaart.jpg" class="rounded float-left col col-3" />
+            <div class="float-left col col-9">
                 <h2 class="producth2">@product.Naam</h2>
                 <h3 class="producth3">Allergenen</h3>
                 @foreach (var productregel in product.Productregels)
@@ -38,7 +38,7 @@
                 }
                 <h3 class="producth3 mt-2">Prijs: € @product.Prijs</h3>
                 <form asp-controller="Cart" asp-action="buy" method="get">
-                    <input id="id" name="id" type="hidden" value="@product.ProductId">
+                    <input id="id" min="1" max="1000" value="1" name="id" type="hidden" value="@product.ProductId">
                     <label for="Aantal">Aantal</label>
                     <input type="number" id="Aantal" name="Aantal" class="rounded" />
                     <button class="buttonadd" type="submit">ADD</button>

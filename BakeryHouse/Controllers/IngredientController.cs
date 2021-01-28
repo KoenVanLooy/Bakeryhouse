@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BakeryHouse.Data;
 using BakeryHouse.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BakeryHouse.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class IngredientController : Controller
     {
         private readonly BakeryHouseContext _context;
@@ -22,12 +25,16 @@ namespace BakeryHouse.Controllers
         // GET: Ingredient
         public async Task<IActionResult> Index()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             return View(await _context.Ingredienten.ToListAsync());
         }
 
         // GET: Ingredient/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -46,6 +53,8 @@ namespace BakeryHouse.Controllers
         // GET: Ingredient/Create
         public IActionResult Create()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             return View();
         }
 
@@ -56,6 +65,8 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IngredientId,Soort,Allergeen,Voorraad,Prijs")] Ingredient ingredient)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (ModelState.IsValid)
             {
                 _context.Add(ingredient);
@@ -68,6 +79,8 @@ namespace BakeryHouse.Controllers
         // GET: Ingredient/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -88,6 +101,8 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IngredientId,Soort,Allergeen,Voorraad,Prijs")] Ingredient ingredient)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id != ingredient.IngredientId)
             {
                 return NotFound();
@@ -119,6 +134,8 @@ namespace BakeryHouse.Controllers
         // GET: Ingredient/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -139,6 +156,8 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             var ingredient = await _context.Ingredienten.FindAsync(id);
             _context.Ingredienten.Remove(ingredient);
             await _context.SaveChangesAsync();

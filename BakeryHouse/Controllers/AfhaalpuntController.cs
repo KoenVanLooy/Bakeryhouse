@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using BakeryHouse.Data;
 using BakeryHouse.Models;
 using BakeryHouse.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BakeryHouse.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AfhaalpuntController : PartialController
     {
         private readonly BakeryHouseContext _context;
@@ -23,11 +26,13 @@ namespace BakeryHouse.Controllers
         // GET: Afhaalpunt
         public async Task<IActionResult> Index()
         {
-        //    IndexAfhaalpuntViewModel viewModel = new IndexAfhaalpuntViewModel
-        //    {
-        //        Afhaalpunten = await _context.Afhaalpunten.ToListAsync()
-        //};
-          var model = await base.CreateModel<IndexAfhaalpuntViewModel>();
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+            //    IndexAfhaalpuntViewModel viewModel = new IndexAfhaalpuntViewModel
+            //    {
+            //        Afhaalpunten = await _context.Afhaalpunten.ToListAsync()
+            //};
+            var model = await base.CreateModel<IndexAfhaalpuntViewModel>();
             model.Afhaalpunten = await _context.Afhaalpunten.ToListAsync();
             return View(model);
         }
@@ -35,6 +40,8 @@ namespace BakeryHouse.Controllers
         // GET: Afhaalpunt/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -53,6 +60,8 @@ namespace BakeryHouse.Controllers
         // GET: Afhaalpunt/Create
         public IActionResult Create()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             return View();
         }
 
@@ -63,6 +72,8 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AfhaalpuntId,Omschrijving,Adres,Postcode,stad")] Afhaalpunt afhaalpunt)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (ModelState.IsValid)
             {
                 _context.Add(afhaalpunt);
@@ -75,6 +86,8 @@ namespace BakeryHouse.Controllers
         // GET: Afhaalpunt/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -95,6 +108,8 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AfhaalpuntId,Omschrijving,Adres,Postcode,stad")] Afhaalpunt afhaalpunt)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id != afhaalpunt.AfhaalpuntId)
             {
                 return NotFound();
@@ -126,6 +141,8 @@ namespace BakeryHouse.Controllers
         // GET: Afhaalpunt/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             if (id == null)
             {
                 return NotFound();
@@ -146,6 +163,8 @@ namespace BakeryHouse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             var afhaalpunt = await _context.Afhaalpunten.FindAsync(id);
             _context.Afhaalpunten.Remove(afhaalpunt);
             await _context.SaveChangesAsync();

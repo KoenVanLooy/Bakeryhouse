@@ -10,6 +10,7 @@ using BakeryHouse.Data;
 using Microsoft.AspNetCore.Authorization;
 using BakeryHouse.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BakeryHouse.Controllers
 {
@@ -23,9 +24,12 @@ namespace BakeryHouse.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = context.Klanten.FirstOrDefault(k => k.UserId == userid);
             string today = DateTime.Today.ToString("yyyy-MM-dd");
             OrderViewModel viewModel = new OrderViewModel
             {
+                Klant = klant,
                 order = new Order(),
                 Today = today,
                 afhaalpunten = await context.Afhaalpunten.ToListAsync()
@@ -44,6 +48,10 @@ namespace BakeryHouse.Controllers
 
         public IActionResult Buy(int? id, int Aantal)
         {
+            if(Aantal <= 0)
+            {
+                return Redirect(HttpContext.Request.Headers["Referer"]);
+            }
             if (SessionHelper.GetObjectFromJson<List<Item>>(HttpContext.Session, "cart") == null)
             {
                 var cart = new List<Item>();

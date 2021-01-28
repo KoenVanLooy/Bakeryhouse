@@ -2,9 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using BakeryHouse.Areas.Identity.Data;
+using BakeryHouse.Data;
+using BakeryHouse.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
@@ -14,15 +17,18 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
+        private readonly BakeryHouseContext _context;
 
         public DeletePersonalDataModel(
             UserManager<CustomUser> userManager,
             SignInManager<CustomUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            BakeryHouseContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _context = context;
         }
 
         [BindProperty]
@@ -67,6 +73,9 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            _context.Klanten.Remove(klant);
+            await _context.SaveChangesAsync();
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
             if (!result.Succeeded)

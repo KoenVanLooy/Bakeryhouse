@@ -10,6 +10,8 @@ namespace BakeryHouse.ViewModels
     {
         public Order order { get; set; }
 
+        public Klant Klant { get; set; }
+
         public string Today { get; set; }
 
         public string RadioField { get; set; }

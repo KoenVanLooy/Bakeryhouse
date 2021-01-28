@@ -4,9 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BakeryHouse.Areas.Identity.Data;
+using BakeryHouse.Data;
+using BakeryHouse.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +17,16 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CustomUser> _userManager;
         private readonly SignInManager<CustomUser> _signInManager;
+        private readonly BakeryHouseContext _context;
 
         public IndexModel(
             UserManager<CustomUser> userManager,
-            SignInManager<CustomUser> signInManager)
+            SignInManager<CustomUser> signInManager,
+            BakeryHouseContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -33,11 +39,28 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Required]
+            [Display(Name = "Voornaam")]
+            public string Voornaam { get; set; }
+
+            [Required]
+            [Display(Name = "Naam")]
+            public string Naam { get; set; }
+
+            [Required]
+            [Display(Name = "Postcode")]
+            public string Postcode { get; set; }
+
+            [Required]
+            [Display(Name = "Telefoon")]
             [Phone]
-            [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
-            public string VoorNaam { get; set; }
         }
 
         private async Task LoadAsync(CustomUser user)
@@ -47,9 +70,16 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
             
             Username = userName;
 
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            user.Klant = klant;
+
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Naam = user.Klant.Naam,
+                Voornaam = user.Klant.Voornaam,
+                Email = user.Email,
+                Postcode = user.Klant.Postcode
             };
         }
 
@@ -90,6 +120,16 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            user.Klant = klant;
+
+            user.Klant.Voornaam = Input.Voornaam;
+            user.Klant.Naam = Input.Naam;
+            user.Klant.Postcode = Input.Postcode;
+            user.Klant.Email = Input.Email;
+            user.Klant.Telefoon = Input.PhoneNumber;
+
+            await _userManager.UpdateAsync(user);
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

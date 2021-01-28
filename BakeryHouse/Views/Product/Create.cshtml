@@ -1,7 +1,7 @@
 ﻿@model BakeryHouse.ViewModels.CreateProductViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Product-Create";
 }
 
 <h1>Create</h1>
@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label asp-for="Product.Type" class="control-label"></label>
                 <select class="form-control" asp-for="Product.Type">
-                    <option selected>Kies Het type product</option>
+                    <option selected value="">Kies Het type product</option>
                     <option value="Taart">Taart</option>
                     <option value="Cupcake">Cupcake</option>
                     <option value="Cake">Cake</option>

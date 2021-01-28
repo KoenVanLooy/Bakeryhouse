@@ -1,0 +1,17 @@
+﻿@model BakeryHouse.ViewModels.ContactViewModel
+@{
+    ViewData["Title"] = "Contact";
+}
+    <div class="container">
+        <h1 class="col col-12">Contact</h1>
+        <div class="col col-12">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2502.1825991054284!2d4.959484415962653!3d51.16042294383369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c14c06d6fc9923%3A0x3632599b5a446df0!2sKleinhoefstraat%204%2C%202440%20Geel!5e0!3m2!1snl!2sbe!4v1611857996531!5m2!1snl!2sbe" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        </div>
+        <div class="col col-12 mt-2">
+            <p class="m-1">U kan ons Contacteren via volgende gegevens: </p>
+            <p class="m-1">Mail: r0444972@student.thomasmore.be</p>
+            <p class="m-1">Telefoon: 014/ 54 75 75</p>
+            <p class="m-1">Adres: @Model.Afhaalpunt.Adres</p>
+            <p class="m-1">@Model.Afhaalpunt.Postcode  @Model.Afhaalpunt.stad</p>
+        </div>
+    </div>

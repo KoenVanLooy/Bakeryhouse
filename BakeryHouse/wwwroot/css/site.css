@@ -27,11 +27,15 @@ a {
         background-color: #eb8fb2;
         border-color: #eb8fb2;
     }
+.btn.btn-primary.disabled {
+    background-color: #eb8fb2;
+}
+
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #eb8fb2;
+    border-color: hotpink;
 }
 
 /* Sticky footer styles

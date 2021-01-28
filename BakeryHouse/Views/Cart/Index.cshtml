@@ -1,5 +1,8 @@
 ﻿@model BakeryHouse.ViewModels.OrderViewModel
-<!-- <div class="container">-->
+@{
+    ViewData["Title"] = "Cart-Index";
+}
+<div class="container-fluid">
 <div class="col-4  float-left">
     <form asp-controller="Order" asp-action="Index">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -11,19 +14,19 @@
         <h1 class="h5">Afhaalpunt naar keuze</h1>
         @foreach (Afhaalpunt afhaalpunt in Model.afhaalpunten)
         {
-    <div class="form-check m-3">
-        <input class="form-check-input" type="radio" name="RadioField" id="id@(afhaalpunt.AfhaalpuntId)" value="Afhaalpuntid@(afhaalpunt.AfhaalpuntId)" checked>
-        <label class="form-check-label" for="id@(afhaalpunt.AfhaalpuntId)">
-            Naam: @afhaalpunt.Omschrijving
-        </label>
-        <p class="m-0">Adres: @afhaalpunt.Adres </p>
-        <p>Stad: @afhaalpunt.stad</p>
-    </div>
-        }
-            <div class="form-group">
-                <input type="submit" value="Order Bevestigen" class="btn btn-primary" />
+            <div class="form-check m-3">
+                <input class="form-check-input" type="radio" name="RadioField" id="id@(afhaalpunt.AfhaalpuntId)" value="Afhaalpuntid@(afhaalpunt.AfhaalpuntId)" checked>
+                <label class="form-check-label" for="id@(afhaalpunt.AfhaalpuntId)">
+                    Naam: @afhaalpunt.Omschrijving
+                </label>
+                <p class="m-0">Adres: @afhaalpunt.Adres </p>
+                <p>Stad: @afhaalpunt.stad</p>
             </div>
-      </form>
+        }
+        <div class="form-group">
+            <input type="submit" value="Order Bevestigen" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 <div class="col-2 float-left"></div>
 <div class="col-6  float-left">
@@ -43,27 +46,27 @@
             </tr>
         </thead>
         <tbody>
-           @{ int i = 0;}
+            @{ int i = 0;}
             @foreach (var item in Model.Items)
             {
-            <tr>
+                <tr>
 
-                <td>
-                    @item.product.Naam
-                </td>
-                <td>
-                    @item.Aantal
-                </td>
-                <td>
-                    € @(item.Aantal * @item.product.Prijs)
-                </td>
-                <td>
-                    <a class="buttonplus px-2 py-1" asp-action="Delitem" asp-route-id="@i">
-                        <i class="fa fa-trash-o"></i>
-                    </a>
-                </td>
-                @{ i++;}
-            </tr>
+                    <td>
+                        @item.product.Naam
+                    </td>
+                    <td>
+                        @item.Aantal
+                    </td>
+                    <td>
+                        € @(item.Aantal * @item.product.Prijs)
+                    </td>
+                    <td>
+                        <a class="buttonplus px-2 py-1" asp-action="Delitem" asp-route-id="@i">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                    </td>
+                    @{ i++;}
+                </tr>
             }
         </tbody>
     </table>
@@ -72,4 +75,4 @@
     </div>
     <p class="text-danger float-right col-12">@Model.FaultMessage</p>
 </div>
-<!--  </div> -->
+</div>
