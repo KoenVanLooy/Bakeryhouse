@@ -7,7 +7,6 @@
     <li class="nav-item dropdown m-2">
         <a class="nav-link dropdown-toggle text-dark pl-0 d-inline-block" href="#" id="userMenu" role="button" aria-haspopup="true" data-toggle="dropdown">
             <i class="fa fa-user"></i>@if (SignInManager.IsSignedIn(User))
-         
             {@((await UserManager.GetUserAsync(User)).Klant.Voornaam)}
         </a>
         <div class="dropdown-menu dropdown-menu-md-right dropdown-default navbar-dropdown-menu" aria-labelledby="userMenu">

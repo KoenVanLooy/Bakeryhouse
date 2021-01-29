@@ -26,8 +26,10 @@ namespace BakeryHouse.Controllers
 
         public IActionResult Index()
         {
+            //Deze lijnen zijn er om voornaam van de user mee te geven in navbar
             string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+            //
             LoginPartialViewModel viewModel = new LoginPartialViewModel
             {
                 klant = klant
@@ -52,6 +54,13 @@ namespace BakeryHouse.Controllers
                 Afhaalpunt = afhaalpunt
             };
             return View(viewModel);
+        }
+
+        public IActionResult OverOns()
+        {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
+            return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

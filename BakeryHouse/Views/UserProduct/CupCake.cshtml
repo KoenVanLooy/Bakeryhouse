@@ -38,9 +38,9 @@
                 }
                 <h3 class="producth3 mt-2">Prijs: € @product.Prijs</h3>
                 <form asp-controller="Cart" asp-action="buy" method="get">
-                    <input id="id" min="1" max="1000" value="1" name="id" type="hidden" value="@product.ProductId">
+                    <input id="id" name="id" type="hidden" value="@product.ProductId">
                     <label for="Aantal">Aantal</label>
-                    <input type="number" id="Aantal" name="Aantal" class="rounded" />
+                    <input type="number"  min="1" max="1000" value="1" id="Aantal" name="Aantal" class="rounded" />
                     <button class="buttonadd" type="submit">ADD</button>
                 </form>
             </div>

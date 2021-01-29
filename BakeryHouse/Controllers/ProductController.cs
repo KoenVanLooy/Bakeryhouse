@@ -153,6 +153,7 @@ namespace BakeryHouse.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            viewModel.Ingredientenlijst = new SelectList(_context.Ingredienten, "IngredientId", "Soort");
             return View(viewModel);
         }
 
@@ -179,6 +180,7 @@ namespace BakeryHouse.Controllers
                 Ingredientenlijst = new SelectList(_context.Ingredienten, "IngredientId", "Soort"),
                 GeselecteerdeIngredienten = product.Productregels.Select(pr => pr.IngredientId)
             };
+
             return View(viewModel);
         }
 

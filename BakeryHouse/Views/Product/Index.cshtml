@@ -7,15 +7,15 @@
         <h1 class="col col-12 float-left">Index</h1>
 
         <p class="col col-12 float-left">
-            <a asp-action="Create">Create New</a>
+            <a asp-action="Create">Nieuw Aanmaken</a>
         </p>
         <form asp-action="Index" method="get">
                 <div class="col col-5 float-left">
-                    <label class="col col-4 float-left  mt-2 mx-0 px-1">Find by name:</label>
+                    <label class="col col-4 float-left  mt-2 mx-0 px-1">Zoek Naam/ type:</label>
                     <input type="text" class=" form-control col col-8 float-left mx-0 px-1" id="SearchString" name="SearchString" value="@Model.CurrentFilter" />
                 </div>
                 <input class="col col-3 float-left btn btn-primary" type="submit" value="Search" /> 
-                <a class="col col-3 float-left mt-2" asp-action="Index">Back to Full List</a>
+                <a class="col col-3 float-left mt-2" asp-action="Index">Volledige Lijst</a>
         </form>
         <table class="table col col-12">
             <thead>
@@ -40,7 +40,7 @@
                             @Html.DisplayFor(modelItem => item.Naam)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Prijs)
+                           € @Html.DisplayFor(modelItem => item.Prijs)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Type)

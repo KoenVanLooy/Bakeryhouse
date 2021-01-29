@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using BakeryHouse.Areas.Identity.Data;
 using BakeryHouse.Data;
@@ -45,6 +47,8 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGet()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -57,6 +61,8 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostAsync()
         {
+            string userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Klant klant = _context.Klanten.FirstOrDefault(k => k.UserId == userid);
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -73,8 +79,8 @@ namespace BakeryHouse.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            Klant klant = await _context.Klanten.FirstOrDefaultAsync(x => x.UserId == user.Id);
-            _context.Klanten.Remove(klant);
+            Klant klant1 = await _context.Klanten.FirstOrDefaultAsync(x => x.UserId == user.Id);
+            _context.Klanten.Remove(klant1);
             await _context.SaveChangesAsync();
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
