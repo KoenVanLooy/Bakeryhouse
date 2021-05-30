@@ -22,7 +22,7 @@ namespace BakeryHouse.Models
 
         [DataType(DataType.Date)]
         public DateTime LeverDatum { get; set; }
-        public ICollection<Orderlijn> Orderlijnen { get; set; }
+        public List<Orderlijn> Orderlijnen { get; set; }
 
 
 

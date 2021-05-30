@@ -31,7 +31,7 @@ namespace BakeryHouse.Controllers.api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _uow.OrderRepository.GetAll().ToListAsync();
+            return await _uow.OrderRepository.GetAll().Include(x => x.Orderlijnen).ThenInclude(y => y.Product).ToListAsync();
         }
 
         // GET: api/Order/5
@@ -56,12 +56,22 @@ namespace BakeryHouse.Controllers.api
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
+            
             if (id != order.OrderId)
             {
                 return BadRequest();
             }
-
-            _uow.OrderRepository.Update(order);
+            var orders = _uow.OrderRepository.GetAll().Include(x => x.Orderlijnen).Where(x => x.OrderId == id);
+            foreach (var order1 in orders)
+            {
+                order1.Orderlijnen.RemoveAll(x => !order.Orderlijnen.Contains(x));
+                order1.Orderlijnen.AddRange(order.Orderlijnen.Where(x => !order1.Orderlijnen.Contains(x)));
+                order1.KlantId = order.KlantId;
+                order1.LeverDatum = order.LeverDatum;
+                order1.Orderdatum = order.Orderdatum;
+                order1.AfhaalpuntId = order.AfhaalpuntId;
+                _uow.OrderRepository.Update(order1);
+            }
 
             try
             {

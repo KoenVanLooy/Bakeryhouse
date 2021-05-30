@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BakeryHouse.Data;
 using BakeryHouse.Models;
+using BakeryHouse.Data.UnitOfWork;
+using Microsoft.Extensions.Logging;
 
 namespace BakeryHouse.Controllers.api
 {
@@ -14,25 +16,27 @@ namespace BakeryHouse.Controllers.api
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly BakeryHouseContext _context;
 
-        public ProductController(BakeryHouseContext context)
+        private readonly IUnitOfWork _uow;
+        private readonly ILogger _logger;
+
+        public ProductController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         // GET: api/Product
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducten()
         {
-            return await _context.Producten.ToListAsync();
+            return await _uow.ProductRepository.GetAll().ToListAsync();
         }
 
         // GET: api/Product/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Producten.FindAsync(id);
+            var product = await _uow.ProductRepository.GetById(id);
 
             if (product == null)
             {
@@ -53,24 +57,17 @@ namespace BakeryHouse.Controllers.api
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            _uow.ProductRepository.Update(product);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _uow.SaveAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                _logger.LogError(ex.Message);
+                return StatusCode(500);
             }
-
             return NoContent();
         }
 
@@ -80,8 +77,17 @@ namespace BakeryHouse.Controllers.api
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            _context.Producten.Add(product);
-            await _context.SaveChangesAsync();
+            _uow.ProductRepository.Create(product);
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Foute save naar database");
+            }
+
 
             return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
         }
@@ -90,21 +96,25 @@ namespace BakeryHouse.Controllers.api
         [HttpDelete("{id}")]
         public async Task<ActionResult<Product>> DeleteProduct(int id)
         {
-            var product = await _context.Producten.FindAsync(id);
+            var product = await _uow.ProductRepository.GetById(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            _context.Producten.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return product;
+            _uow.ProductRepository.Delete(product);
+            try
+            {
+                await _uow.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Foute save naar database");
+            }
+            return NoContent();
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Producten.Any(e => e.ProductId == id);
-        }
+       
     }
 }
