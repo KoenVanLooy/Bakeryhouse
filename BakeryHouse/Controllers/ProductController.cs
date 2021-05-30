@@ -21,7 +21,6 @@ namespace BakeryHouse.Controllers
 
         public ProductController(BakeryHouseContext context)
         {
-            
             _context = context;
         }
 
